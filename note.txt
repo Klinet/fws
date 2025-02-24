@@ -1,4 +1,9 @@
-Akalmazás:
+Szükséglet:
+ .env.example to .env
+ composer install
+ docker compose up -d
+
+Alkalmazás:
 docker exec -it php_container bash
 ./vendor/bin/phpunit --testdox
 OR
