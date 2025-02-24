@@ -12,23 +12,55 @@ class DatabaseTest extends TestCase
 
     protected function setUp(): void
     {
+        // Load database connection parameters from environment variables
         $connectionParams = [
-            'dbname'   => $_ENV['DB_DATABASE'] ?? getenv('DB_DATABASE'),
-            'user'     => $_ENV['DB_USERNAME'] ?? getenv('DB_USERNAME'),
-            'password' => $_ENV['DB_PASSWORD'] ?? getenv('DB_PASSWORD'),
-            'host'     => $_ENV['DB_HOST'] ?? getenv('DB_HOST'),
+            'dbname'   => 'fws-db-dev',
+            'user'     => 'root',
+            'password' => 'root',
+            'host'     => 'mysql_db',
             'driver'   => 'pdo_mysql',
         ];
 
         try {
+            // Establish the database connection
             $this->connection = DriverManager::getConnection($connectionParams);
         } catch (Exception $e) {
             $this->fail("Database connection failed: " . $e->getMessage());
         }
     }
 
-    public function testDatabaseConnection()
+    protected function tearDown(): void
     {
-        $this->assertNotNull($this->connection, "Database connection should be established.");
+        // Clean up the database after each test
+        if ($this->connection) {
+            $this->connection->executeStatement("DELETE FROM products WHERE title = 'Test Product'");
+        }
+    }
+
+    public function testDatabaseExists()
+    {
+        $this->assertNotNull($this->connection, "Database connection should not be null.");
+    }
+
+    public function testCanRetrieveTables()
+    {
+        $stmt = $this->connection->query("SHOW TABLES;");
+        $tables = $stmt->fetchAllAssociative();
+
+        $this->assertNotEmpty($tables, "Database has no tables.");
+    }
+
+    public function testCanInsertAndRetrieveData()
+    {
+        // Insert test data
+        $this->connection->executeStatement("INSERT INTO products (title) VALUES ('Test Product')");
+
+        // Retrieve the inserted data
+        $stmt = $this->connection->executeQuery("SELECT * FROM products WHERE title = 'Test Product'");
+        $result = $stmt->fetchAssociative();
+
+        // Assertions
+        $this->assertNotEmpty($result, "Inserted data could not be retrieved.");
+        $this->assertEquals('Test Product', $result['title'], "Inserted title does not match expected value.");
     }
 }
