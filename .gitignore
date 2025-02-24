@@ -1,6 +1,35 @@
-composer.phar
+# Ignore composer dependencies
 /vendor/
+composer.lock
 
-# Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
-# You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
-# composer.lock
+# Ignore PHPUnit & Coverage reports
+/phpunit.xml
+/phpunit.xml.dist
+/coverage/
+# Ignore Docker runtime files
+/.docker/
+docker-compose.override.yml
+docker-compose.yml~
+/.env
+.env.local
+.env.*.local
+# Ignore PhpStorm settings
+/.idea/
+# Ignore database dumps and generated SQLite files
+/database/*.sqlite
+/database/*.sqlite3
+/database/database.sqlite
+/database/seeds/*.json
+/database/seeds/*.sql
+/storage/
+/node_modules/
+/package-lock.json
+/yarn.lock
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db

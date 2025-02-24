@@ -1,0 +1,17 @@
+docker exec -i php_container composer dump-autoload
+
+Service initialization: Instead of requiring bootstrap.php,
+we initialize the ProductImportService directly in public/index.php.
+
+php public/index.php app:import-products
+updatePriceHistory(): This method inserts a new record into the price_history table whenever a product’s price is updated or inserted. It stores:
+product_id: The product’s ID.
+price: The new price of the product.
+updated_at: The current timestamp when the price is changed.
+syncProduct(): Calls updatePriceHistory() after syncing the product data (either creating or updating the product).
+
+
+generateXmlFeed(): This method retrieves products and categories from the database and builds an XML string.
+SQL Query: It joins products, product_categories, and categories to fetch product information along with associated categories.
+SimpleXMLElement: The XML document is built using SimpleXMLElement. It adds each product with its title, price, and categories.
+Organizing Data: We group products by their ID to make sure we have all categories for each product before generating the XML.

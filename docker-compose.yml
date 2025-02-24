@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: php/Dockerfile
+    container_name: php_container
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fws-db-dev
+      MYSQL_USER: akali
+      MYSQL_PASSWORD: Teszt0000
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
